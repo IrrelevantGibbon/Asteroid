@@ -22,4 +22,6 @@ func set_ship_data(angle, vector_pos):
 
 
 func _on_Area2D_body_entered(body):
-	body.on_laser_asteroid_entered()
+	if (body.name.find("Asteroid") != -1):
+		body.on_laser_asteroid_entered()
+		queue_free()

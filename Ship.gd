@@ -5,7 +5,7 @@ signal shoot
 
 export var max_speed = 400
 export var rotate_speed = 0.9
-var speed_acceleration = 10
+var speed_acceleration = 5
 export(PackedScene) var laser_scene
 var current_speed = 0
 var screen_size
@@ -52,4 +52,18 @@ func _on_ShootTimer_timeout():
 	can_shoot = true
 
 func _on_Area2D_body_entered(body):
-	print('entered !!!')
+	if (body.name.find("Asteroid") != -1):
+		body.on_laser_asteroid_entered()
+#		queue_free()
+	if (body.name.find("PowerU") != -1):
+		var child = (body as RigidBody2D).get_child(0)
+		_apply_power_up(child.animation)
+		body.queue_free()
+		
+func _apply_power_up(power_up_name):
+	if (power_up_name == "speed"):
+		speed_acceleration += 5
+	if (power_up_name == "amo"):
+		$ShootTimer.wait_time -= 0.1
+	if (power_up_name == "shield"):
+		pass

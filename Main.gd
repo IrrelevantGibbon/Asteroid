@@ -2,11 +2,12 @@ extends Node2D
 
 export(PackedScene) var laser_scene
 export(PackedScene) var asteroid_scene
+export(PackedScene) var powerup_scene
+var score
 
 func _ready():
 	randomize()
-	$MeteorTimer.start()
-	$Ship.set_position($StartPosition.position)
+	_start_game()
 
 func _on_Ship_shoot():
 	var laser = laser_scene.instance()
@@ -15,27 +16,33 @@ func _on_Ship_shoot():
 
 
 func _on_meteorTimer_timeout():
-		# Create a new instance of the asteroid scene.
-	var asteroid = asteroid_scene.instance()
+	_add_scene(asteroid_scene.instance())
 
-	# Choose a random location on Path2D.
-	var asteroid_spawn_location = get_node("AstreroidPath/AsteroidSpawnLocation")
-	asteroid_spawn_location.offset = randi()
+func _on_ScoreTimer_timeout():
+	score += 1
 
-	# Set the asteroid's direction perpendicular to the path direction.
-	var direction = asteroid_spawn_location.rotation + PI / 2
+func _start_game():
+	score = 0
+	$MeteorTimer.start()
+	$PowerUpTimer.start()
+	$ScoreTimer.start()
+	$Ship.set_position($StartPosition.position)
 
-	# Set the asteroid's position to a random location.
-	asteroid.position = asteroid_spawn_location.position
+func _emd_game():
+	$MeteorTimer.start()
+	$ScoreTimer.start()
 
-	# Add some randomness to the direction.
+func _on_PowerUpTimer_timeout():
+	_add_scene(powerup_scene.instance())
+
+func _add_scene(scene):
+	var scene_spawn_location = get_node("AstreroidPath/AsteroidSpawnLocation")
+	scene_spawn_location.offset = randi()
+	var direction = scene_spawn_location.rotation + PI / 2
+	scene.position = scene_spawn_location.position
 	direction += rand_range(-PI / 4, PI / 4)
-	asteroid.rotation = direction
-
-	# Choose the velocity for the asteroid.
+	scene.rotation = direction
 	var velocity = Vector2(rand_range(150.0, 250.0), 0.0)
-	asteroid.linear_velocity = velocity.rotated(direction)
-
-	# Spawn the asteroid by adding it to the Main scene.
-	add_child(asteroid)
-
+	scene.linear_velocity = velocity.rotated(direction)
+	add_child(scene)
+	

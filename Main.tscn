@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Ship.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Main.gd" type="Script" id=2]
 [ext_resource path="res://Laser.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Asteroid.tscn" type="PackedScene" id=4]
 [ext_resource path="res://arts/background.jpg" type="Texture" id=5]
+[ext_resource path="res://powerUp.tscn" type="PackedScene" id=6]
 
 [sub_resource type="Curve2D" id=1]
 _data = {
@@ -15,6 +16,7 @@ _data = {
 script = ExtResource( 2 )
 laser_scene = ExtResource( 3 )
 asteroid_scene = ExtResource( 4 )
+powerup_scene = ExtResource( 6 )
 
 [node name="TextureRect" type="TextureRect" parent="."]
 margin_right = 40.0
@@ -26,6 +28,11 @@ texture = ExtResource( 5 )
 
 [node name="MeteorTimer" type="Timer" parent="."]
 wait_time = 0.7
+
+[node name="ScoreTimer" type="Timer" parent="."]
+wait_time = 2.0
+
+[node name="PowerUpTimer" type="Timer" parent="."]
 
 [node name="AstreroidPath" type="Path2D" parent="."]
 curve = SubResource( 1 )
@@ -39,3 +46,5 @@ position = Vector2( 579, 347 )
 
 [connection signal="shoot" from="Ship" to="." method="_on_Ship_shoot"]
 [connection signal="timeout" from="MeteorTimer" to="." method="_on_meteorTimer_timeout"]
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_ScoreTimer_timeout"]
+[connection signal="timeout" from="PowerUpTimer" to="." method="_on_PowerUpTimer_timeout"]
